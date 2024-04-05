@@ -11,9 +11,10 @@ import Banner4 from '../../assets/images/banner4.jpg';
 import Slider from "react-slick";
 import TopProducts from './TopProducts';
 import { MyContext } from '../../App';
+import { ToastContainer } from 'react-toastify';
 
 const Home = (props) => {
-
+    console.log(props, "inside home");
     const [prodData, setprodData] = useState(props.data)
     const [catArray, setcatArray] = useState([])
     const [activeTab, setactiveTab] = useState();
@@ -38,53 +39,53 @@ const Home = (props) => {
 
     const catArr = [];
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        prodData.length !== 0 &&
-            prodData.map((item) => {
-                item.items.length !== 0 &&
-                    item.items.map((item_) => {
-                        catArr.push(item_.cat_name);
-                    })
-            })
+    //     prodData.length !== 0 &&
+    //         prodData.map((item) => {
+    //             item.items.length !== 0 &&
+    //                 item.items.map((item_) => {
+    //                     catArr.push(item_.cat_name);
+    //                 })
+    //         })
 
-        const list2 = catArr.filter((item, index) => catArr.indexOf(item) === index);
-        setcatArray(list2)
+    //     const list2 = catArr.filter((item, index) => catArr.indexOf(item) === index);
+    //     setcatArray(list2)
 
-        setactiveTab(list2[0])
+    //     setactiveTab(list2[0])
 
-        window.scrollTo(0,0);
+    //     window.scrollTo(0,0);
 
-    }, [])
-
-
+    // }, [])
 
 
 
-    useEffect(() => {
-        var arr = [];
-        setActiveTabData(arr);
-        prodData.length !== 0 &&
-            prodData.map((item, index) => {
-                item.items.map((item_, index_) => {
-                    if (item_.cat_name === activeTab) {
-                        {
-                            item_.products.length !== 0 &&
-                                item_.products.map((product) => {
-                                    arr.push({ ...product, parentCatName: item.cat_name, subCatName: item_.cat_name })
-                                })
 
-                            setActiveTabData(arr)
-                            setTimeout(()=>{
-                                setIsLoadingProducts(false);
-                            },[1000]);
-                        }
-                    }
-                })
 
-            })
+    // useEffect(() => {
+    //     var arr = [];
+    //     setActiveTabData(arr);
+    //     prodData.length !== 0 &&
+    //         prodData.map((item, index) => {
+    //             item.items.map((item_, index_) => {
+    //                 if (item_.cat_name === activeTab) {
+    //                     {
+    //                         item_.products.length !== 0 &&
+    //                             item_.products.map((product) => {
+    //                                 arr.push({ ...product, parentCatName: item.cat_name, subCatName: item_.cat_name })
+    //                             })
 
-    }, [activeTab, activeTabData])
+    //                         setActiveTabData(arr)
+    //                         setTimeout(()=>{
+    //                             setIsLoadingProducts(false);
+    //                         },[1000]);
+    //                     }
+    //                 }
+    //             })
+
+    //         })
+
+    // }, [activeTab, activeTabData])
 
 
 
@@ -92,25 +93,25 @@ const Home = (props) => {
 
     const bestSellsArr = [];
 
-    useEffect(() => {
-        prodData.length !== 0 &&
-            prodData.map((item) => {
-                if (item.cat_name === "Electronics") {
-                    item.items.length !== 0 &&
-                        item.items.map((item_) => {
-                            item_.products.length !== 0 &&
-                                item_.products.map((product, index) => {
-                                    bestSellsArr.push(product);
-                                })
-                        })
-                }
+    // useEffect(() => {
+    //     prodData.length !== 0 &&
+    //         prodData.map((item) => {
+    //             if (item.cat_name === "Electronics") {
+    //                 item.items.length !== 0 &&
+    //                     item.items.map((item_) => {
+    //                         item_.products.length !== 0 &&
+    //                             item_.products.map((product, index) => {
+    //                                 bestSellsArr.push(product);
+    //                             })
+    //                     })
+    //             }
 
-            });
+    //         });
 
 
-        setBestSells(bestSellsArr);
+    //     setBestSells(bestSellsArr);
 
-    }, [])
+    // }, [])
 
 
 
@@ -157,8 +158,8 @@ const Home = (props) => {
                     <div className={`productRow ${isLoadingProducts===true && 'loading'}`} ref={productRow}>
 
                         {
-                            activeTabData.length !== 0 &&
-                            activeTabData.map((item, index) => {
+                            props.productApi.length !== 0 &&
+                            props.productApi.map((item, index) => {
                                 return (
                                     <div className='item' key={index}>
 
@@ -186,7 +187,7 @@ const Home = (props) => {
                     </div>
 
                     <br className='res-hide' /><br  className='res-hide'/>
-                    <div className='row'>
+                    {/* <div className='row'>
                         <div className='col-md-3 pr-5 res-hide'>
                             <img src={Banner4} className='w-100' />
                         </div>
@@ -207,7 +208,7 @@ const Home = (props) => {
 
                             </Slider>
                         </div>
-                    </div>
+                    </div> */}
 
 
                 </div>
@@ -237,7 +238,7 @@ const Home = (props) => {
                     </div>
                 </div>
             </section>
-
+           
       
         </div>
     )

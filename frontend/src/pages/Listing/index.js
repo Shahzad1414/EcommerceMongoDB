@@ -373,8 +373,8 @@ const Listing = (props) => {
                                 <div className='productRow pl-4 pr-3'>
 
                                     {
-                                        data.length !== 0 &&
-                                        data.map((item, index) => {
+                                        props.productApi !== 0 &&
+                                        props.productApi.map((item, index) => {
                                             return (
                                                 <div className='item' key={index}>
                                                     <Product tag={item.type} item={item} />

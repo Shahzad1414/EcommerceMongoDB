@@ -25,7 +25,7 @@ const auth = getAuth(app);
 const schema = yup.object().shape({
   firstname: yup.string().required("First Name is required"),
   lastname: yup.string().required("Last Name is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
+  email: yup.string().email("Invalid email").required("Email address is required"),
   mobile: yup.string().required("Mobile is required"),
   password: yup.string().required("Password is required"),
 });

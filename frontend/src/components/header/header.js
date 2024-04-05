@@ -130,7 +130,7 @@ const Header = (props) => {
         setisOpenAccDropDown(false)
         context.setIsopenNavigation(false)
     }
-
+const isLogin = localStorage.getItem('customer');
     return (
         <>
             <div className='headerWrapper' ref={headerRef}>
@@ -161,7 +161,7 @@ const Header = (props) => {
                                         </ul>
                                         <div className='navbarToggle mr-2' onClick={openNav}><MenuIcon /></div>
                                         {
-                                            context.isLogin === "true" &&
+                                            isLogin &&
                                             <div className='myAccDrop' onClick={() => setisOpenAccDropDown(!isOpenAccDropDown)}><PersonOutlineOutlinedIcon /></div>
                                         }
 
@@ -229,7 +229,7 @@ const Header = (props) => {
                                             </li>
 
                                             {
-                                                context.isLogin === "true" ?
+                                                isLogin ?
 
                                                     <li className='list-inline-item'>
 
@@ -300,9 +300,6 @@ const Header = (props) => {
                 </ul>
                 </>
             }
-
-
-
 
         </>
     )

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Header from './components/header/header';
 import Footer from './components/footer/footer';
+import ProductCheck from './components/productCheck';
 import Home from './pages/Home/index';
 import About from './pages/About/index';
 import Listing from './pages/Listing';
@@ -18,11 +19,16 @@ import SignUp from './pages/SignUp';
 import Loader from './assets/images/loading.gif';
 
 import data from './data';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllProducts } from './features/products/productSlice';
+import Wishlist from './pages/Wishlist';
 const MyContext = createContext();
 
 function App() {
-
+  const dispatch = useDispatch();
+  const productState = useSelector((state)=>state?.product?.product);
   const [productData, setProductData] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsloading] = useState(true);
@@ -33,6 +39,10 @@ function App() {
   const [isLogin, setIsLogin] = useState();
   const [isOpenFilters, setIsopenFilters] = useState(false);
 
+
+  useEffect(()=>{
+    getProducts();
+  },[])
 
 
   useEffect(() => {
@@ -45,10 +55,12 @@ function App() {
    
       setTimeout(() => {
         setProductData(data[1]);
+        
         setIsloading(false);
       }, 3000);
 
-
+      
+    // console.log(checkProducts, "check");
   
   }, []);
 
@@ -98,6 +110,10 @@ function App() {
     }
 
   }
+  
+  const getProducts = () => {
+    dispatch(getAllProducts())
+  }
 
   const removeItemsFromCart = (id) => {
     const arr = cartItems.filter((obj) => obj.id !== id);
@@ -137,11 +153,11 @@ function App() {
     signIn,
     openFilters,
     isopenNavigation,
-    setIsopenNavigation
+    setIsopenNavigation,
   }
 
   return (
-    
+    <>
     data.productData.length !== 0 &&
     <BrowserRouter>
       <MyContext.Provider value={value}>
@@ -152,11 +168,13 @@ function App() {
         
         <Header data={data.productData} />
         <Routes>
-          <Route exact={true} path="/" element={<Home data={data.productData} />} />
+          {productState && <Route exact={true} path="/" element={<Home data={data.productData} productApi={productState} />} />}
           <Route exact={true} path="/cat/:id" element={<Listing data={data.productData} single={true} />} />
-          <Route exact={true} path="/cat/:id/:id" element={<Listing data={data.productData} single={false} />} />
+          {productState && <Route exact={true} path="/cat/:id/:id" element={<Listing data={data.productData} productApi={productState} single={false} />} />}
           <Route exact={true} path="/product/:id" element={<DetailsPage data={data.productData} />} />
+          {productState && <Route exact={true} path="/product" element={<ProductCheck data={productState} />} />}
           <Route exact={true} path="/cart" element={<Cart />} />
+          <Route exact={true} path="/wishlist" element={<Wishlist />} />
           <Route exact={true} path="/signIn" element={<SignIn />} />
           <Route exact={true} path="/signUp" element={<SignUp />} />
           <Route exact={true} path="*" element={<NotFound />} />
@@ -164,6 +182,20 @@ function App() {
        <Footer/>
       </MyContext.Provider>
     </BrowserRouter>
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
+    <ToastContainer />
+    </>
   );
 }
 

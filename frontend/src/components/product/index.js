@@ -8,20 +8,25 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
+import { addToWishlist } from "../../features/products/productSlice";
 
 import { MyContext } from '../../App';
+import { useDispatch } from 'react-redux';
 
 
 const Product = (props) => {
 
+    const dispatch = useDispatch();
     const [productData, setProductData] = useState();
     const [isAdded, setIsadded] = useState(false);
     
+    console.log(productData, "inside Product Component");
+
     const context  = useContext(MyContext);
 
     useEffect(() => {
         setProductData(props.item);
-    }, [props.item])
+    }, [])
 
     const setProductCat=()=>{
         sessionStorage.setItem('parentCat', productData.parentCatName);
@@ -34,27 +39,35 @@ const Product = (props) => {
         setIsadded(true);
     }
 
+    const addWishlist = (id) => {
+        console.log(id, "addtowishlist id");
+        dispatch(addToWishlist(id))
+    }
 
     return (
         <div className='productThumb' onClick={setProductCat}>
-            {
-                props.tag !== null && props.tag !== undefined &&
-                <span className={`badge ${props.tag}`}>{props.tag}</span>
-            }
+            {/* {
+                // productData.tags !== null && productData.tags !== undefined &&
+                <span className={`badge ${productData.tags}`}>{productData.tags}</span>
+            } */}
 
             {
                 productData !== undefined &&
                 <>
-                    <Link to={`/product/${productData.id}`}>
+                    <Link 
+                    // to={`/product/${productData?._id}`}
+                    >
                         <div className='imgWrapper'>
                             <div className='p-4 wrapper mb-3'>
-                                <img src={productData.catImg+'?im=Resize=(420,420)'} className='w-100' />
+                               
+                                <img src={productData.images[0].url+'?im=Resize=(420,420)'} className='w-100' />
+                               
                             </div>
 
                             <div className='overlay transition'>
                                 <ul className='list list-inline mb-0'>
-                                    <li className='list-inline-item'>
-                                        <a className='cursor' tooltip="Add to Wishlist">
+                                    <li className='list-inline-item' onClick={()=>{addWishlist(productData?._id)}}>
+                                        <a className='cursor' tooltip="Add to Wishlist" >
                                             <FavoriteBorderOutlinedIcon />
                                         </a>
                                     </li>
@@ -75,16 +88,17 @@ const Product = (props) => {
                     </Link>
 
                     <div className='info'>
-                        <span className='d-block catName'>{productData.brand}</span>
-                        <h4 className='title'><Link>{productData.productName.substr(0,50)+'...'}</Link></h4>
+                        <span className='d-block catName'>{productData.category}</span>
+                        <h4 className='title'><Link>{productData.title.substr(0,50)+'...'}</Link></h4>
                         <Rating name="half-rating-read" 
-                        value={parseFloat(productData.rating)} precision={0.5} readOnly />
+                        value={parseFloat(productData.totalrating)} precision={0.5} readOnly />
                         <span className='brand d-block text-g'>By <Link className='text-g'>{productData.brand}</Link></span>
 
                         <div className='d-flex align-items-center mt-3'>
                             <div className='d-flex align-items-center w-100'>
                                 <span className='price text-g font-weight-bold'>
-                                    Rs {productData.price}</span> <span className='oldPrice ml-auto'>Rs {productData.oldPrice}</span>
+                                    Rs {productData.price}</span> 
+                                    {/* <span className='oldPrice ml-auto'>Rs {productData.oldPrice}</span> */}
                             </div>
                         </div>
 
@@ -93,16 +107,9 @@ const Product = (props) => {
                                 isAdded===true ? 'Added' : 'Add'
                             }
                         </Button>
-
                     </div>
-
                 </>
             }
-
-
-
-
-
 
         </div>
     )
