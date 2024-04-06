@@ -2,25 +2,28 @@ import React, { useEffect, useState, useContext } from 'react';
 import './style.css';
 import Rating from '@mui/material/Rating';
 import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import { addToWishlist } from "../../features/products/productSlice";
 
 import { MyContext } from '../../App';
 import { useDispatch } from 'react-redux';
+import { getUserProductWishlist } from '../../features/users/userSlice';
 
 
 const Product = (props) => {
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [productData, setProductData] = useState();
     const [isAdded, setIsadded] = useState(false);
     
-    console.log(productData, "inside Product Component");
+    console.log(props, "inside Product Component");
 
     const context  = useContext(MyContext);
 
@@ -42,6 +45,8 @@ const Product = (props) => {
     const addWishlist = (id) => {
         console.log(id, "addtowishlist id");
         dispatch(addToWishlist(id))
+
+    
     }
 
     return (
@@ -54,29 +59,32 @@ const Product = (props) => {
             {
                 productData !== undefined &&
                 <>
-                    <Link 
-                    // to={`/product/${productData?._id}`}
-                    >
+                   
                         <div className='imgWrapper'>
                             <div className='p-4 wrapper mb-3'>
                                
-                                <img src={productData.images[0].url+'?im=Resize=(420,420)'} className='w-100' />
+                                <img  src={productData.images[0].url+'?im=Resize=(420,420)'} className='w-100' />
                                
                             </div>
 
-                            <div className='overlay transition'>
+                            <div className='overlay transition' >
                                 <ul className='list list-inline mb-0'>
+                                  
                                     <li className='list-inline-item' onClick={()=>{addWishlist(productData?._id)}}>
-                                        <a className='cursor' tooltip="Add to Wishlist" >
-                                            <FavoriteBorderOutlinedIcon />
-                                        </a>
+                                       
+                                           {props.wishlistProduct ? <a className='cursor' tooltip="Remove to Wishlist" >
+                                            <ClearIcon />
+                                            </a> :
+                                            <a className='cursor' tooltip="Add to Wishlist" ><FavoriteBorderOutlinedIcon /></a>} 
+                                            
+                                        
                                     </li>
                                     <li className='list-inline-item'>
                                         <a className='cursor' tooltip="Compare">
                                             <CompareArrowsOutlinedIcon />
                                         </a>
                                     </li>
-                                    <li className='list-inline-item'>
+                                    <li className='list-inline-item' onClick={()=>{navigate("/product/"+productData._id)}}>
                                         <a className='cursor' tooltip="Quick View">
                                             <RemoveRedEyeOutlinedIcon />
                                         </a>
@@ -85,9 +93,8 @@ const Product = (props) => {
                             </div>
                         </div>
 
-                    </Link>
 
-                    <div className='info'>
+                    <div className='info' onClick={()=>{navigate("/product/"+productData._id)}}>
                         <span className='d-block catName'>{productData.category}</span>
                         <h4 className='title'><Link>{productData.title.substr(0,50)+'...'}</Link></h4>
                         <Rating name="half-rating-read" 

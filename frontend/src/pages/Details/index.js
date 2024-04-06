@@ -6,6 +6,7 @@ import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css';
 import Slider from "react-slick";
 import { useRef } from 'react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useEffect } from 'react';
@@ -13,14 +14,22 @@ import { Button } from '@mui/material';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
-
+import { useLocation } from "react-router-dom";
 import Product from '../../components/product';
 import axios from 'axios';
 import { MyContext } from '../../App';
+import { getAProduct } from '../../features/products/productSlice';
 
 
 const DetailsPage = (props) => {
 
+    const location = useLocation();
+    const getProductId = location.pathname.split("/")[2];
+    console.log(getProductId, "product detail page");
+    const dispatch = useDispatch();
+
+    const productState = useSelector(state=>state.product.product);
+    
     const [zoomInage, setZoomImage] = useState('https://www.jiomart.com/images/product/original/490000363/maggi-2-minute-masala-noodles-70-g-product-images-o490000363-p490000363-0-202305292130.jpg');
 
     const [bigImageSize, setBigImageSize] = useState([1500, 1500]);
@@ -127,60 +136,9 @@ const DetailsPage = (props) => {
     useEffect(() => {
         window.scrollTo(0, 0)
 
-        props.data.length !== 0 &&
-            props.data.map((item) => {
-                item.items.length !== 0 &&
-                    item.items.map((item_) => {
-                        item_.products.length !== 0 &&
-                            item_.products.map((product) => {
-                                if (parseInt(product.id) === parseInt(id)) {
-                                    setCurrentProduct(product);
-                                }
-                            })
-                    })
-            })
+        dispatch(getAProduct(getProductId));
 
-
-
-
-
-
-
-
-        //related products code
-
-        const related_products = [];
-
-        props.data.length !== 0 &&
-            props.data.map((item) => {
-                if (prodCat.parentCat === item.cat_name) {
-                    item.items.length !== 0 &&
-                        item.items.map((item_) => {
-                            if (prodCat.subCatName === item_.cat_name) {
-                                item_.products.length !== 0 &&
-                                    item_.products.map((product, index) => {
-                                        if (product.id !== parseInt(id)) {
-                                            related_products.push(product)
-                                        }
-
-                                    })
-                            }
-                        })
-                }
-
-            })
-
-
-        if (related_products.length !== 0) {
-            setRelatedProducts(related_products)
-        }
-
-
-        showReviews();
-
-        getCartData("http://localhost:5000/cartItems");
-
-    }, [id]);
+    }, [getProductId]);
 
 
 
@@ -366,21 +324,23 @@ const DetailsPage = (props) => {
 
                         {/* product info code start here */}
                         <div className='col-md-7 productInfo'>
-                            <h1>{currentProduct.productName}</h1>
+                            <h1>{productState?.title}</h1>
                             <div className='d-flex align-items-center mb-4 mt-3'>
-                                <Rating name="half-rating-read" value={parseFloat(currentProduct.rating)} precision={0.5} readOnly />
+                                <Rating name="half-rating-read" value={parseFloat(productState?.totalrating)} precision={0.5} readOnly />
                                 <span className='text-light ml-2'>(32 reviews)</span>
                             </div>
 
                             <div className='priceSec d-flex align-items-center mb-3'>
-                                <span className='text-g priceLarge'>Rs {currentProduct.price}</span>
+                                <span className='text-g priceLarge'>Rs {productState?.price}</span>
                                 <div className='ml-3 d-flex flex-column'>
-                                    <span className='text-org'>{currentProduct.discount}% Off</span>
-                                    <span className='text-light oldPrice'>Rs {currentProduct.oldPrice}</span>
+                                    {/* <span className='text-org'>{currentProduct.discount}% Off</span> */}
+                                    {/* <span className='text-light oldPrice'>Rs {currentProduct.oldPrice}</span> */}
                                 </div>
                             </div>
-
-                            <p>{currentProduct.description}</p>
+                            <div
+                                dangerouslySetInnerHTML={{__html: productState?.description}}
+                            />
+                            
 
                             {
                                 currentProduct.weight !== undefined && currentProduct.weight.length !== 0 &&

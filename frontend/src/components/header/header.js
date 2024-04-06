@@ -42,6 +42,7 @@ const Header = (props) => {
     const headerRef = useRef();
     const searchInput = useRef()
 
+    const navigate = useNavigate();
     const context = useContext(MyContext);
     const history = useNavigate();
 
@@ -130,6 +131,10 @@ const Header = (props) => {
         setisOpenAccDropDown(false)
         context.setIsopenNavigation(false)
     }
+
+    const gotowishlist = () =>{
+        navigate("/wishlist");
+    }
 const isLogin = localStorage.getItem('customer');
     return (
         <>
@@ -211,7 +216,7 @@ const isLogin = localStorage.getItem('customer');
                                                     Compare
                                                 </span>
                                             </li>
-                                            <li className='list-inline-item'>
+                                            <li className='list-inline-item' onClick={gotowishlist}>
                                                 <span>
                                                     <img src={IconHeart} />
                                                     <span className='badge bg-success rounded-circle'>3</span>

@@ -23,12 +23,16 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProducts } from './features/products/productSlice';
+import { getUserProductWishlist } from './features/users/userSlice';
+
 import Wishlist from './pages/Wishlist';
 const MyContext = createContext();
 
 function App() {
   const dispatch = useDispatch();
   const productState = useSelector((state)=>state?.product?.product);
+  const wishlistState = useSelector((state)=>state.auth.wishlist?.wishlist);
+
   const [productData, setProductData] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsloading] = useState(true);
@@ -42,8 +46,12 @@ function App() {
 
   useEffect(()=>{
     getProducts();
+    getWishlistFromDb();
+
   },[])
 
+
+  
 
   useEffect(() => {
     // getData('http://localhost:5000/productData');
@@ -115,6 +123,10 @@ function App() {
     dispatch(getAllProducts())
   }
 
+  const getWishlistFromDb = () =>{
+    dispatch(getUserProductWishlist());
+  };
+
   const removeItemsFromCart = (id) => {
     const arr = cartItems.filter((obj) => obj.id !== id);
     setCartItems(arr)
@@ -174,7 +186,7 @@ function App() {
           <Route exact={true} path="/product/:id" element={<DetailsPage data={data.productData} />} />
           {productState && <Route exact={true} path="/product" element={<ProductCheck data={productState} />} />}
           <Route exact={true} path="/cart" element={<Cart />} />
-          <Route exact={true} path="/wishlist" element={<Wishlist />} />
+          {wishlistState && <Route exact={true} path="/wishlist" element={<Wishlist  data={wishlistState}/>} />}
           <Route exact={true} path="/signIn" element={<SignIn />} />
           <Route exact={true} path="/signUp" element={<SignUp />} />
           <Route exact={true} path="*" element={<NotFound />} />

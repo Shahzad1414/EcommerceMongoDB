@@ -14,7 +14,6 @@ import { MyContext } from '../../App';
 import { ToastContainer } from 'react-toastify';
 
 const Home = (props) => {
-    console.log(props, "inside home");
     const [prodData, setprodData] = useState(props.data)
     const [catArray, setcatArray] = useState([])
     const [activeTab, setactiveTab] = useState();
@@ -158,8 +157,8 @@ const Home = (props) => {
                     <div className={`productRow ${isLoadingProducts===true && 'loading'}`} ref={productRow}>
 
                         {
-                            props.productApi.length !== 0 &&
-                            props.productApi.map((item, index) => {
+                            props?.productApi?.length !== 0 &&
+                            props?.productApi?.map((item, index) => {
                                 return (
                                     <div className='item' key={index}>
 
